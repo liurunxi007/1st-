@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>幸福之家</title>
+    <!-- Normalize.css CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <!-- Font Awesome CDN -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --background-color: #f8f9fa;
+        }
+
+        /* 响应式导航栏 */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 5%;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* 修改图片网格布局 */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 固定三列 */
+            gap: 1rem;
+            padding: 2rem 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 卡片悬停效果 */
+        .card {
+            display: flex;
+            flex-direction: column;
+            height: 700px; /* 增加总高度 */
+            transition: transform 0.3s ease;
+            border-radius: 8px;
+            width: 100%;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* 修改图片显示方式 */
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 15px;
+        }
+
+        /* 调整描述区域 */
+        .card div:last-child {
+            flex-shrink: 0;
+            height: auto;
+            padding: 15px;
+            background: rgba(255,255,255,0.9);
+            border-top: 1px solid #eee;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: 1fr; /* 小屏幕单列显示 */
+            }
+            .card {
+                height: auto; /* 自动高度 */
+            }
+        }
+
+        /* 大屏幕优化 */
+        @media (min-width: 1200px) {
+            .gallery {
+                grid-template-columns: repeat(3, minmax(400px, 1fr));
+            }
+        }
+
+        /* 添加图片显示动画 */
+        .image-container {
+            flex: 1;
+            min-height: 60%;
+            position: relative;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease, transform 0.3s ease;
+        }
+
+        /* 添加图片加载后的动画 */
+        .image-container.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 按钮悬停效果 */
+        button {
+            margin-top: 15px;
+            padding: 12px 24px;
+            font-size: 1.1em;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="logo">幸福之家</div>
+        <div class="nav-links">
+            <a href="#home">首页</a>
+            <a href="#about">关于</a>
+            <a href="#gallery">作品</a>
+        </div>
+    </nav>
+
+    <!-- 图片展示区 -->
+    <main class="gallery">
+        <!-- 图片通过JavaScript动态加载 -->
+    </main>
+
+    <!-- 页脚 -->
+    <footer style="background: var(--primary-color); color: white; padding: 2rem 5%;">
+        <div class="social-links">
+            <a href="#"><i class="fab fa-weibo"></i></a>
+            <a href="#"><i class="fab fa-weixin"></i></a>
+        </div>
+        <p>&copy; 幸福之家</p>
+    </footer>
+
+    <script>
+        // 修改图片数据部分
+        const photos = [
+            { 
+                src: 'C:/Users/u370384/OneDrive - Danfoss/Desktop/Cursor/周猪.jpg', 
+                title: '周猪', 
+                desc: '这是周猪' 
+            },
+
+            { 
+                src: 'C:/Users/u370384/OneDrive - Danfoss/Desktop/Cursor/猪人.jpg', 
+                title: '猪人', 
+                desc: '这是猪人' 
+            },
+
+            { 
+                src: 'C:/Users/u370384/OneDrive - Danfoss/Desktop/Cursor/大头.jpg', 
+                title: '大头儿', 
+                desc: '这是大头儿' 
+            }
+
+        ];
+
+        // 动态加载图片
+        function initGallery() {
+            const gallery = document.querySelector('.gallery');
+            photos.forEach(photo => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="image-container" style="display:none;">
+                        <img src="${photo.src}" loading="lazy" 
+                             style="width:100%; height:500px; object-fit: cover;">
+                    </div>
+                    <div style="padding:1rem; height: 30%; overflow: auto;">
+                        <h3>${photo.title}</h3>
+                        <p>${photo.desc}</p>
+                        <button onclick="toggleImage(this)" 
+                                style="margin-top:10px; padding:8px 16px; 
+                                       background:var(--secondary-color); color:white; 
+                                       border:none; border-radius:4px; cursor:pointer;">
+                            显示图片
+                        </button>
+                    </div>
+                `;
+                gallery.appendChild(card);
+            });
+        }
+
+        // 添加图片切换函数
+        function toggleImage(button) {
+            const imageContainer = button.parentElement.previousElementSibling;
+            imageContainer.style.display = 'block';
+            imageContainer.style.opacity = 1; // 触发渐显效果
+            button.style.display = 'none'; // 隐藏按钮而不是删除
+        }
+
+        // 初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            initGallery();
+            // 其他初始化代码...
+        });
+
+        // 实现简单轮播
+        class SimpleSlider {
+            constructor(selector) {
+                this.container = document.querySelector(selector);
+                this.slides = [...this.container.children];
+                this.currentIndex = 0;
+            }
+            
+            next() {
+                // 切换逻辑...
+            }
+        }
+
+        // 实现图片模态框
+        function createModal(imgSrc) {
+            const modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.background = 'rgba(0,0,0,0.8)';
+            // ...其他样式设置
+            document.body.appendChild(modal);
+        }
+    </script>
+</body>
+</html> 
